@@ -1,0 +1,6 @@
+[database]
+port = 5432
+domain = "localhost"
+database = "blgdb"
+username = "birblog"
+password = "password"
