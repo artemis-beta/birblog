@@ -1,12 +1,14 @@
 import click
 import pathlib
+import os
 import datetime
 import typing
 import pydantic
+import uvicorn
 
 from birblog.database.actions import initialise_database, add_observation
 from birblog.config import BirbLogConfig
-from birblog.database.query import check_has_entry 
+from birblog.api import create_application
 
 
 @click.group("birblog")
@@ -29,6 +31,15 @@ def birblog(ctx, config_file: pathlib.Path):
 def server(_):
     """Manage the BirbLog server"""
     pass
+
+
+@server.command("api")
+@click.option("--host", default="127.0.0.1", help="Specify the host.")
+@click.option("--port", type=click.IntRange(min=8000, max=8100), help="Specify port.", default=8000)
+@click.pass_context
+def run_api(ctx, host: str, port: int) -> None:
+    _fast_api_app = create_application(ctx.obj.database.url)
+    uvicorn.run(_fast_api_app, host=host, port=port) 
 
 
 @server.command("init")

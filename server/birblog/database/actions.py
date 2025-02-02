@@ -45,6 +45,20 @@ def initialise_database(
     Bird.metadata.create_all(_engine)
 
 
+def add_bird(
+    sql_database: typing.Annotated[str, pydantic.Field(pattern=POSTGRES_URL_PATTERN)],
+    bird: str
+) -> Bird:
+    _engine = sqlmodel.create_engine(sql_database, echo=True)
+    with sqlmodel.Session(_engine) as session:
+        if (_existing_bird := check_has_entry(bird, sql_database)):
+            return session.get(Bird, _existing_bird)
+        _bird = get_bird_data(bird)
+        session.add(_bird)
+        session.commit()
+        return _bird
+
+
 def add_observation(
     sql_database: typing.Annotated[str, pydantic.Field(pattern=POSTGRES_URL_PATTERN)],
     birds: list[str],
@@ -64,3 +78,12 @@ def add_observation(
         _observation = Observation(log_time=observed_at, records=_records)
         session.add(_observation)
         session.commit()
+
+
+def get_bird(
+    bird_id: int,
+    sql_database: typing.Annotated[str, pydantic.Field(pattern=POSTGRES_URL_PATTERN)]
+) -> Bird | None:
+    _engine = sqlmodel.create_engine(sql_database, echo=True)
+    with sqlmodel.Session(_engine) as session:
+        return session.get(Bird, bird_id)

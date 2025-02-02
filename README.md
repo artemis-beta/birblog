@@ -3,7 +3,7 @@ A sandbox bird observation project for creating a full stack application: databa
 
 |**Component**|**Description**|
 |-------------|---------------|
-|Database     |PostgresSQL    |
+|Database     |PostgreSQL    |
 |Server       |Python: ModelSQL/SQLAlchemy|
 |RestAPI      ||
 |WebUI        ||

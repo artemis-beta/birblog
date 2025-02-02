@@ -78,15 +78,15 @@ def get_bird_data(bird_name: str) -> Bird:
     _image: bytes = get_image(_wikidspark_result.id, _result.json())
     _wingspan: float = get_wingspan(_wikidspark_result.id, _result.json())
 
+    _images = [Image(data=_image)] if _image else []
+
 
     return Bird(
         taxon_name=_taxon_name,
         mass=_mass,
         wingspan=_wingspan,
         wikidata_id=_wikidspark_result.id,
-        images=[
-            Image(data=_image)
-        ],
+        images=_images,
         alternative_names = [
         AlternativeName(name=alias)
             for alias in _aliases
